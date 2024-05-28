@@ -30,5 +30,6 @@ module.exports = {
     },
     watchFiles: ['src/**/*.html'],
     hot: true,
+    port: 3000,
   }
 };
