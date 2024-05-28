@@ -9,6 +9,9 @@ const NATIVE_TICKER = "FLT";
 const RPC_URL = "https://ipc.dar.fluence.dev";
 const BLOCK_EXPLORER_URL = "https://blockscout.dar.fluence.dev";
 const DECIMALS = 18;
+const TUSD_TICKER = "tUSD";
+const TUSD_CONTRACT_ADDRESS = "0x266EA7F56DCaD2F5FD9B480724839542Bcc0c305";
+const TUSD_DECIMALS = 6;
 
 const scheme = window.location.protocol.slice(0, -1);
 const domain = window.location.host;
@@ -23,14 +26,16 @@ const addressButton = document.getElementById("address-button");
 const popoverAddress = document.getElementById("address-popover");
 const switchChainButton = document.getElementById("switch-chain");
 const connectedChainButton = document.getElementById("connected-chain");
+const importTokenButton = document.getElementById("import-tusd");
 
-if (!connectWalletBtn || !siweBtn || !addressButton || !popoverAddress || !switchChainButton || !connectedChainButton) {
+if (!connectWalletBtn || !siweBtn || !addressButton || !popoverAddress || !switchChainButton || !connectedChainButton || !importTokenButton) {
 	throw new Error("DOM elements not found");
 }
 
 connectWalletBtn.onclick = connectWallet;
 siweBtn.onclick = signInWithEthereum;
 switchChainButton.onclick = switchChain;
+importTokenButton.onclick = importToken;
 
 // Wallet Utils
 
@@ -97,6 +102,23 @@ async function switchChain() {
 		alert("An error occurred, check the console for more details.");
 	}
 }
+
+async function importToken() {
+	try {
+		await provider.send("wallet_watchAsset", {
+			type: "ERC20",
+			options: {
+				address: TUSD_CONTRACT_ADDRESS,
+				decimals: TUSD_DECIMALS,
+				symbol: TUSD_TICKER,
+			}
+		});
+	} catch (error) {
+		console.error(error);
+		alert("An error occurred, check the console for more details.");
+	}
+}
+
 
 // Utils
 
