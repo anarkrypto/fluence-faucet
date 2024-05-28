@@ -98,23 +98,6 @@ async function switchChain() {
 	}
 }
 
-async function onLoad() {
-	try {
-		const network = await provider.getNetwork();
-		const isConnected = toHex(network.chainId) === toHex(CHAIN_ID);
-		if (isConnected) {
-			updateOnConnected();
-		} else {
-			updateOnDisconnected();
-		}
-	} catch (error) {
-		console.error(error);
-		alert("An error occurred, check the console for more details.");
-	}
-}
-
-onLoad();
-
 // Utils
 
 function toHex(value) {
@@ -146,3 +129,22 @@ function updateOnDisconnected() {
 function truncateAddress(address) {
 	return address.slice(0, 7) + "..." + address.slice(-5);
 }
+
+// Triggered on page load
+
+async function onLoad() {
+	try {
+		const network = await provider.getNetwork();
+		const isConnected = toHex(network.chainId) === toHex(CHAIN_ID);
+		if (isConnected) {
+			updateOnConnected();
+		} else {
+			updateOnDisconnected();
+		}
+	} catch (error) {
+		console.error(error);
+		alert("An error occurred, check the console for more details.");
+	}
+}
+
+onLoad();
