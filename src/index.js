@@ -25,10 +25,10 @@ const siweBtn = document.getElementById("siweBtn");
 const addressButton = document.getElementById("address-button");
 const popoverAddress = document.getElementById("address-popover");
 const switchChainButton = document.getElementById("switch-chain");
-const connectedChainButton = document.getElementById("connected-chain");
+const connectedChainDiv = document.getElementById("connected-chain");
 const importTokenButton = document.getElementById("import-tusd");
 
-if (!connectWalletBtn || !siweBtn || !addressButton || !popoverAddress || !switchChainButton || !connectedChainButton || !importTokenButton) {
+if (!connectWalletBtn || !siweBtn || !addressButton || !popoverAddress || !switchChainButton || !connectedChainDiv || !importTokenButton) {
 	throw new Error("DOM elements not found");
 }
 
@@ -135,17 +135,17 @@ function updateAddress(address) {
 	connectWalletBtn.setAttribute("data-active", "false");
 	popoverAddress.querySelector("span.address").innerText =
 		truncateAddress(address);
-	siweBtn.removeAttribute("disabled");
+	siweBtn.setAttribute("data-active", "true");
 }
 
 function updateOnConnected() {
 	switchChainButton.setAttribute("data-active", "false");
-	connectedChainButton.setAttribute("data-active", "true");
+	connectedChainDiv.setAttribute("data-active", "true");
 }
 
 function updateOnDisconnected() {
 	switchChainButton.setAttribute("data-active", "true");
-	connectedChainButton.setAttribute("data-active", "false");
+	connectedChainDiv.setAttribute("data-active", "false");
 }
 
 function truncateAddress(address) {
