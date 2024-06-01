@@ -19,6 +19,7 @@
   },
   "devDependencies": {
     "bufferutil": "^4.0.7",
+    "dotenv-webpack": "^8.1.0",
     "html-webpack-plugin": "^5.5.1",
     "utf-8-validate": "^6.0.3",
     "webpack": "^5.80.0",

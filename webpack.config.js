@@ -2,6 +2,7 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
+const DotenvPlugin = require('dotenv-webpack');
 
 module.exports = {
 	mode: "development",
@@ -25,7 +26,8 @@ module.exports = {
 		new NodePolyfillPlugin(),
 		new CopyPlugin({
 			patterns: [{ from: "./assets", to: "" }]
-		})
+		}),
+		new DotenvPlugin()
 	],
 	devServer: {
 		static: {
