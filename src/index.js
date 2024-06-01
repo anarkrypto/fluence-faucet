@@ -134,26 +134,26 @@ modal.subscribeState(onStateChange);
 
 // Set DOM Elements and Event Listeners
 
-const connectWalletBtn = document.getElementById("connectWalletBtn");
-const siweBtn = document.getElementById("siweBtn");
-const addressButton = document.getElementById("address-button");
-const switchChainButton = document.getElementById("switch-chain");
-const connectedChainDiv = document.getElementById("connected-chain");
-const importTokenButton = document.getElementById("import-tusd");
+const claimButton = document.getElementById("claim-btn");
+const addressButton = document.getElementById("address-btn");
+const importTokenButton = document.getElementById("import-tusd-btn");
+const switchChainButton = document.getElementById("switch-chain-btn");
+const connectedChainDiv = document.getElementById("connected-chain-div");
+const connectWalletButton = document.getElementById("connect-wallet-btn");
 
 if (
-	!connectWalletBtn ||
-	!siweBtn ||
+	!claimButton ||
 	!addressButton ||
+	!importTokenButton ||
 	!switchChainButton ||
 	!connectedChainDiv ||
-	!importTokenButton
+	!connectWalletButton
 ) {
 	throw new Error("DOM elements not found");
 }
 
-connectWalletBtn.onclick = connectWallet;
-siweBtn.onclick = claim;
+connectWalletButton.onclick = connectWallet;
+claimButton.onclick = claim;
 addressButton.onclick = handleOpenModal;
 switchChainButton.onclick = switchChain;
 importTokenButton.onclick = importToken;
@@ -244,15 +244,15 @@ function updateAddress(address) {
 	addressButton.setAttribute("data-active", "true");
 	addressButton.querySelector("span.address").innerText =
 		truncateAddress(address);
-	connectWalletBtn.setAttribute("data-active", "false");
-	siweBtn.setAttribute("data-active", "true");
+	connectWalletButton.setAttribute("data-active", "false");
+	claimButton.setAttribute("data-active", "true");
 }
 
 function resetAddress() {
 	addressButton.setAttribute("data-active", "false");
 	addressButton.querySelector("span.address").innerText = "";
-	connectWalletBtn.setAttribute("data-active", "true");
-	siweBtn.setAttribute("data-active", "false");
+	connectWalletButton.setAttribute("data-active", "true");
+	claimButton.setAttribute("data-active", "false");
 }
 
 function updateOnConnected() {
@@ -266,6 +266,6 @@ function updateOnDisconnected() {
 }
 
 function setReceiveLoading(loading) {
-	siweBtn.setAttribute("data-loading", (loading).toString());
-	siweBtn.disabled = loading;
+	claimButton.setAttribute("data-loading", (loading).toString());
+	claimButton.disabled = loading;
 }

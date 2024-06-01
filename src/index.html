@@ -32,13 +32,13 @@
 		>
 			<div class="flex items-center gap-2">
 				<button
-					id="switch-chain"
+					id="switch-chain-btn"
 					class="text-xs sm:text-sm text-white border border-gray-700 rounded-full px-3 py-1.5 hover:border-[#E41C5C] hover:text-[#E41C5C] data-[active=false]:hidden"
 				>
 					Switch Chain
 				</button>
 				<div
-					id="connected-chain"
+					id="connected-chain-div"
 					class="gap-1 items-center text-green-600 rounded-full px-3 py-1 hidden data-[active=true]:flex"
 				>
 					<svg
@@ -59,7 +59,7 @@
 					Connected
 				</div>
 				<button
-					id="import-tusd"
+					id="import-tusd-btn"
 					class="text-xs sm:text-sm text-gray-200 border border-gray-700 rounded-full px-3 py-1.5 hover:border-[#E41C5C] hover:text-[#E41C5C]"
 				>
 					Import tUSD to Metamask
@@ -84,7 +84,7 @@
 			</div>
 			<div class="mb-6 flex justify-center">
 				<button
-					id="address-button"
+					id="address-btn"
 					class="w-full max-w-md relative justify-center items-center pl-6 pr-12 h-12 bg-transparent text-white rounded-full border border-gray-700/60 hidden data-[active=true]:flex gap-x-3"
 					data-active="false"
 					popovertarget="address-popover"
@@ -111,7 +111,7 @@
 					</svg>
 				</button>
 				<button
-					id="connectWalletBtn"
+					id="connect-wallet-btn"
 					class="w-full max-w-md px-6 h-12 text-xl border border-[#B5305A] font-semibold text-[#E41C5C] rounded-full hidden data-[active=true]:block hover:opacity-80"
 					data-active="true"
 				>
@@ -121,7 +121,7 @@
 			<div class="flex justify-center items-center h-16">
 				<button
 					class="w-48 flex justify-center group bg-[#E41C5C] hover:opacity-80 text-white font-bold py-2 px-4 rounded-lg disabled:bg-gray-500 disabled:cursor-not-allowed disabled:opacity-50 data-[active=false]:hidden"
-					id="siweBtn"
+					id="claim-btn"
 					data-active="false"
 				>
 					<span class="block group-data-[loading=true]:hidden"
