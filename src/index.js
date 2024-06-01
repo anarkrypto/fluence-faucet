@@ -195,11 +195,6 @@ async function importToken() {
 }
 
 // Utils
-
-function toHex(value) {
-	return "0x" + value.toString(16);
-}
-
 function truncateAddress(address) {
 	return address.slice(0, 7) + "..." + address.slice(-5);
 }
