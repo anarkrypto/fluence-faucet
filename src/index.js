@@ -143,7 +143,10 @@ const modal = createWeb3Modal({
 	projectId,
 	chains,
 	ethersConfig,
-	siweConfig
+	siweConfig,
+	themeVariables: {
+		"--w3m-accent": "#E41C5C"
+	}
 });
 
 async function handleOpenModal() {
