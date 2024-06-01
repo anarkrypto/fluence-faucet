@@ -10,7 +10,6 @@ const CHAIN_NAME = "Fluence dar Network";
 const NATIVE_TICKER = "FLT";
 const RPC_URL = "https://ipc.dar.fluence.dev";
 const BLOCK_EXPLORER_URL = "https://blockscout.dar.fluence.dev";
-const DECIMALS = 18;
 const TUSD_TICKER = "tUSD";
 const TUSD_CONTRACT_ADDRESS = "0x266EA7F56DCaD2F5FD9B480724839542Bcc0c305";
 const TUSD_DECIMALS = 6;
@@ -18,6 +17,31 @@ const SIGN_MESSAGE_STATEMENT = "Fluence Faucet - Sign with your account";
 
 const HOST = window.location.host;
 const ORIGIN = window.location.origin;
+
+// Set DOM Elements and Event Listeners
+
+const claimButton = document.getElementById("claim-btn");
+const addressButton = document.getElementById("address-btn");
+const importTokenButton = document.getElementById("import-tusd-btn");
+const addressAvatarImg = document.getElementById("address-avatar-img");
+const connectedChainDiv = document.getElementById("connected-chain-div");
+const connectWalletButton = document.getElementById("connect-wallet-btn");
+
+if (
+	!claimButton ||
+	!addressButton ||
+	!importTokenButton ||
+	!addressAvatarImg ||
+	!connectedChainDiv ||
+	!connectWalletButton
+) {
+	throw new Error("DOM elements not found");
+}
+
+connectWalletButton.onclick = connectWallet;
+claimButton.onclick = claim;
+addressButton.onclick = handleOpenModal;
+importTokenButton.onclick = importToken;
 
 // Session Utils
 
@@ -28,7 +52,7 @@ async function loadSession() {
 	if (!address || !message || !signature) {
 		throw new Error("Failed to get session");
 	}
-	return {address, message, signature};
+	return { address, message, signature };
 }
 
 function setSession({ address, message, signature }) {
@@ -93,7 +117,8 @@ const siweConfig = createSIWEConfig({
 	onSignOut
 });
 
-const projectId = process.env.WALLET_CONNECT_PROJECT_ID || "WALLET_CONNECT_TEST_PROJECT_ID";
+const projectId =
+	process.env.WALLET_CONNECT_PROJECT_ID || "WALLET_CONNECT_TEST_PROJECT_ID";
 const chains = [
 	{
 		chainId: CHAIN_ID,
@@ -120,45 +145,6 @@ const modal = createWeb3Modal({
 	ethersConfig,
 	siweConfig
 });
-
-async function onStateChange(state) {
-	const isConnected = state.selectedNetworkId === CHAIN_ID;
-	if (isConnected) {
-		updateOnConnected();
-	} else {
-		updateOnDisconnected();
-	}
-}
-
-modal.subscribeState(onStateChange);
-
-// Set DOM Elements and Event Listeners
-
-const claimButton = document.getElementById("claim-btn");
-const addressButton = document.getElementById("address-btn");
-const importTokenButton = document.getElementById("import-tusd-btn");
-const switchChainButton = document.getElementById("switch-chain-btn");
-const addressAvatarImg = document.getElementById("address-avatar-img");
-const connectedChainDiv = document.getElementById("connected-chain-div");
-const connectWalletButton = document.getElementById("connect-wallet-btn");
-
-if (
-	!claimButton ||
-	!addressButton ||
-	!importTokenButton ||
-	!switchChainButton ||
-	!addressAvatarImg ||
-	!connectedChainDiv ||
-	!connectWalletButton
-) {
-	throw new Error("DOM elements not found");
-}
-
-connectWalletButton.onclick = connectWallet;
-claimButton.onclick = claim;
-addressButton.onclick = handleOpenModal;
-switchChainButton.onclick = switchChain;
-importTokenButton.onclick = importToken;
 
 async function handleOpenModal() {
 	modal.open();
@@ -187,29 +173,6 @@ async function claim() {
 		alert(error.message);
 	} finally {
 		setReceiveLoading(false);
-	}
-}
-
-async function switchChain() {
-	try {
-		const provider = await modal.getWalletProvider();
-		await provider.send("wallet_addEthereumChain", [
-			{
-				chainId: toHex(CHAIN_ID),
-				chainName: CHAIN_NAME,
-				nativeCurrency: {
-					name: NATIVE_TICKER,
-					symbol: NATIVE_TICKER,
-					decimals: DECIMALS
-				},
-				rpcUrls: [RPC_URL],
-				blockExplorerUrls: [BLOCK_EXPLORER_URL]
-			}
-		]);
-		updateOnConnected();
-	} catch (error) {
-		console.error(error);
-		alert("An error occurred, check the console for more details.");
 	}
 }
 
@@ -243,8 +206,8 @@ function truncateAddress(address) {
 // UI Utils
 
 function updateAddress(address) {
-	addressAvatarImg.setAttribute('alt', address);
-	addressAvatarImg.setAttribute('address', address);
+	addressAvatarImg.setAttribute("alt", address);
+	addressAvatarImg.setAttribute("address", address);
 	addressButton.setAttribute("data-active", "true");
 	addressButton.querySelector("span.address").innerText =
 		truncateAddress(address);
@@ -253,25 +216,15 @@ function updateAddress(address) {
 }
 
 function resetAddress() {
-	addressAvatarImg.setAttribute('alt', '');
-	addressAvatarImg.setAttribute('address', '');
+	addressAvatarImg.setAttribute("alt", "");
+	addressAvatarImg.setAttribute("address", "");
 	addressButton.setAttribute("data-active", "false");
 	addressButton.querySelector("span.address").innerText = "";
 	connectWalletButton.setAttribute("data-active", "true");
 	claimButton.setAttribute("data-active", "false");
 }
 
-function updateOnConnected() {
-	switchChainButton.setAttribute("data-active", "false");
-	connectedChainDiv.setAttribute("data-active", "true");
-}
-
-function updateOnDisconnected() {
-	switchChainButton.setAttribute("data-active", "true");
-	connectedChainDiv.setAttribute("data-active", "false");
-}
-
 function setReceiveLoading(loading) {
-	claimButton.setAttribute("data-loading", (loading).toString());
+	claimButton.setAttribute("data-loading", loading.toString());
 	claimButton.disabled = loading;
 }
