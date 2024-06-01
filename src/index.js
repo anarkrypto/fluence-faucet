@@ -24,7 +24,6 @@ const claimButton = document.getElementById("claim-btn");
 const addressButton = document.getElementById("address-btn");
 const importTokenButton = document.getElementById("import-tusd-btn");
 const addressAvatarImg = document.getElementById("address-avatar-img");
-const connectedChainDiv = document.getElementById("connected-chain-div");
 const connectWalletButton = document.getElementById("connect-wallet-btn");
 
 if (
@@ -32,7 +31,6 @@ if (
 	!addressButton ||
 	!importTokenButton ||
 	!addressAvatarImg ||
-	!connectedChainDiv ||
 	!connectWalletButton
 ) {
 	throw new Error("DOM elements not found");
@@ -145,7 +143,7 @@ const modal = createWeb3Modal({
 	ethersConfig,
 	siweConfig,
 	themeVariables: {
-		"--w3m-accent": "#E41C5C"
+		"--w3m-accent": "#E41C5C",
 	}
 });
 
