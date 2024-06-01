@@ -24,6 +24,49 @@
 				height: 100%;
 				opacity: 0.15;
 			}
+
+			.wui-button {
+				cursor: pointer;
+				border-radius: var(--wui-border-radius-3xl);
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				position: relative;
+				gap: var(--wui-spacing-xs);
+				column-gap: var(--wui-spacing-3xs);
+				padding: var(--wui-spacing-2xs) var(--wui-spacing-s)
+					var(--wui-spacing-2xs) var(--wui-spacing-xs);
+				border: 1px solid var(--wui-color-gray-glass-010);
+				background-color: var(--wui-color-gray-glass-005);
+				color: var(--wui-color-fg-100);
+				transition: background-color var(--wui-ease-inout-power-1)
+						var(--wui-duration-md),
+					color var(--wui-ease-inout-power-1) var(--wui-duration-md),
+					box-shadow var(--wui-ease-inout-power-1) var(--wui-duration-md);
+				will-change: background-color, color;
+				text-decoration: none;
+				font-weight: 500;
+				line-height: 24px;
+			}
+			.wui-button:hover:enabled {
+				background: var(--wui-color-gray-glass-010);
+			}
+			.wui-icon {
+				border-radius: var(--wui-border-radius-3xl);
+				width: 24px;
+				height: 24px;
+				box-shadow: 0 0 0 2px var(--wui-color-gray-glass-005);
+				--local-bg-value: var(--wui-color-fg-100);
+				--local-bg-mix: 16%;
+				--local-border-radius: var(--wui-border-radius-3xl);
+				--local-size: var(--wui-icon-box-size-sm);
+				--local-border: 2px solid transparent;
+			}
+			.wui-text {
+				--local-align: left;
+				--local-color: var(--wui-color-inherit);
+				margin-left: 4px;
+			}
 		</style>
 	</head>
 	<body class="flex flex-col items-center justify-between min-h-screen bg">
@@ -32,32 +75,18 @@
 		>
 			<div class="flex items-center gap-2">
 				<w3m-network-button></w3m-network-button>
-				<div
-					id="connected-chain-div"
-					class="gap-1 items-center text-green-600 rounded-full px-3 py-1 hidden data-[active=true]:flex"
-				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						width="24"
-						height="24"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="2"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						class="w-5 h-5"
+				<button id="import-tusd-btn" class="wui-button">
+					<wui-icon-box
+						size="sm"
+						iconcolor="inverse-100"
+						backgroundcolor="fg-100"
+						icon="add"
+						class="wui-icon"
 					>
-						<circle cx="12" cy="12" r="10" />
-						<path d="m9 12 2 2 4-4" />
-					</svg>
-					Connected
-				</div>
-				<button
-					id="import-tusd-btn"
-					class="text-xs sm:text-sm text-gray-200 border border-gray-700 rounded-full px-3 py-1.5 hover:border-[#E41C5C] hover:text-[#E41C5C]"
-				>
-					Import tUSD to Metamask
+					</wui-icon-box>
+					<wui-text variant="paragraph-600" color="inherit" class="wui-text !text-xs"
+						>Import tUSD to Metamask</wui-text
+					>
 				</button>
 			</div>
 		</header>
@@ -80,7 +109,7 @@
 			<div class="mb-6 flex justify-center">
 				<button
 					id="address-btn"
-					class="w-full max-w-md relative justify-center items-center pl-6 pr-12 h-12 bg-transparent text-white rounded-full border border-gray-700/60 hidden data-[active=true]:flex gap-x-4"
+					class="w-full max-w-md relative justify-center items-center pl-6 pr-12 h-12 bg-transparent text-white rounded-full border border-white/10 hidden data-[active=true]:flex gap-x-4"
 					data-active="false"
 					popovertarget="address-popover"
 				>
@@ -106,7 +135,7 @@
 				</button>
 				<button
 					id="connect-wallet-btn"
-					class="w-full max-w-md px-6 h-12 text-xl border border-[#B5305A] font-semibold text-[#E41C5C] rounded-full hidden data-[active=true]:block hover:opacity-80"
+					class="w-full max-w-md px-6 h-12 text-xl border border-[#E41C5C] font-semibold text-[#E41C5C] rounded-full hidden data-[active=true]:block hover:opacity-80"
 					data-active="true"
 				>
 					Connect Wallet
