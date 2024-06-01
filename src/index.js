@@ -1,5 +1,7 @@
-import { BrowserProvider } from "ethers";
-import { SiweMessage } from "siwe";
+import { generateNonce } from "siwe";
+import { createSIWEConfig, formatMessage } from "@web3modal/siwe";
+import { createWeb3Modal, defaultConfig } from "@web3modal/ethers";
+import { ethers, BrowserProvider } from "ethers";
 
 // Constants
 
@@ -12,77 +14,183 @@ const DECIMALS = 18;
 const TUSD_TICKER = "tUSD";
 const TUSD_CONTRACT_ADDRESS = "0x266EA7F56DCaD2F5FD9B480724839542Bcc0c305";
 const TUSD_DECIMALS = 6;
+const SIGN_MESSAGE_STATEMENT = "Fluence Faucet - Sign with your account";
 
-const scheme = window.location.protocol.slice(0, -1);
-const domain = window.location.host;
-const origin = window.location.origin;
-const provider = new BrowserProvider(window.ethereum);
+const HOST = window.location.host;
+const ORIGIN = window.location.origin;
+
+// Session Utils
+
+async function loadSession() {
+	const { address, message, signature } = JSON.parse(
+		localStorage.getItem("session")
+	);
+	if (!address || !message || !signature) {
+		throw new Error("Failed to get session");
+	}
+	return {address, message, signature};
+}
+
+function setSession({ address, message, signature }) {
+	const data = JSON.stringify({ address, message, signature });
+	localStorage.setItem("session", data);
+	updateAddress(address);
+}
+
+function removeSession() {
+	localStorage.removeItem("session");
+}
+
+// Wallet Connect
+
+async function getMessageParams() {
+	return {
+		domain: HOST,
+		uri: ORIGIN,
+		chains: [CHAIN_ID],
+		statement: SIGN_MESSAGE_STATEMENT
+	};
+}
+
+async function getSession() {
+	const { address } = await loadSession();
+	const chainId = CHAIN_ID;
+	onSignIn({ address, chainId });
+	return { address, chainId };
+}
+
+async function verifyMessage({ message, signature }) {
+	try {
+		const address = await ethers.verifyMessage(message, signature);
+		setSession({ address, message, signature });
+		return true;
+	} catch (error) {
+		console.error(error);
+		return false;
+	}
+}
+
+async function signOut() {
+	removeSession();
+}
+
+async function onSignIn(data) {
+	updateAddress(data.address);
+}
+
+async function onSignOut() {
+	resetAddress();
+}
+
+const siweConfig = createSIWEConfig({
+	getMessageParams,
+	createMessage: ({ address, ...args }) => formatMessage(args, address),
+	getNonce: async () => generateNonce(),
+	getSession,
+	verifyMessage,
+	signOut,
+	onSignIn,
+	onSignOut
+});
+
+const projectId = process.env.WALLET_CONNECT_PROJECT_ID || "WALLET_CONNECT_TEST_PROJECT_ID";
+const chains = [
+	{
+		chainId: CHAIN_ID,
+		name: CHAIN_NAME,
+		currency: NATIVE_TICKER,
+		rpcUrl: RPC_URL,
+		explorerUrl: BLOCK_EXPLORER_URL
+	}
+];
+const metadata = {
+	name: "fluence-faucet",
+	description: "Connect to receive FLT & tUSDC for testnet",
+	url: ORIGIN,
+	icons: [`${ORIGIN}/icon.png`]
+};
+
+const ethersConfig = defaultConfig({
+	metadata
+});
+
+const modal = createWeb3Modal({
+	projectId,
+	chains,
+	ethersConfig,
+	siweConfig
+});
+
+async function onStateChange(state) {
+	const isConnected = state.selectedNetworkId === CHAIN_ID;
+	if (isConnected) {
+		updateOnConnected();
+	} else {
+		updateOnDisconnected();
+	}
+}
+
+modal.subscribeState(onStateChange);
 
 // Set DOM Elements and Event Listeners
 
 const connectWalletBtn = document.getElementById("connectWalletBtn");
 const siweBtn = document.getElementById("siweBtn");
 const addressButton = document.getElementById("address-button");
-const popoverAddress = document.getElementById("address-popover");
 const switchChainButton = document.getElementById("switch-chain");
 const connectedChainDiv = document.getElementById("connected-chain");
 const importTokenButton = document.getElementById("import-tusd");
 
-if (!connectWalletBtn || !siweBtn || !addressButton || !popoverAddress || !switchChainButton || !connectedChainDiv || !importTokenButton) {
+if (
+	!connectWalletBtn ||
+	!siweBtn ||
+	!addressButton ||
+	!switchChainButton ||
+	!connectedChainDiv ||
+	!importTokenButton
+) {
 	throw new Error("DOM elements not found");
 }
 
 connectWalletBtn.onclick = connectWallet;
-siweBtn.onclick = signInWithEthereum;
+siweBtn.onclick = claim;
+addressButton.onclick = handleOpenModal;
 switchChainButton.onclick = switchChain;
 importTokenButton.onclick = importToken;
 
-// Wallet Utils
-
-function createSiweMessage(address, statement) {
-	const message = new SiweMessage({
-		scheme,
-		domain,
-		address,
-		statement,
-		uri: origin,
-		version: "1",
-		chainId: "1"
-	});
-	return message.prepareMessage();
+async function handleOpenModal() {
+	modal.open();
 }
 
 async function connectWallet() {
 	try {
-		const signer = await provider.getSigner();
-		if (signer.address) {
-			updateAddress(signer.address);
-		}
-	} catch {
-		alert("user rejected request");
+		modal.open();
+	} catch (error) {
+		alert(error.message);
 	}
 }
 
-async function signInWithEthereum() {
+async function claim() {
 	try {
-		const signer = await provider.getSigner();
-		const message = createSiweMessage(
-			signer.address,
-			"Sign in with Ethereum to the app."
-		);
-		console.log(await signer.signMessage(message));
+		const session = loadSession();
+
+		setReceiveLoading(true);
+
+		// TODO: Implement receive backend
+
+		await new Promise((resolve) => setTimeout(resolve, 2000));
+
+		setReceiveLoading(false);
 	} catch (error) {
-		if (error instanceof Error && error.reason === "rejected") {
-			alert("User rejected request");
-		} else {
-			alert("An error occurred, check the console for more details.");
-			console.error(error);
-		}
+		alert(error.message);
+	} finally {
+		setReceiveLoading(false);
 	}
 }
 
 async function switchChain() {
 	try {
+		const provider = await modal.getWalletProvider();
 		await provider.send("wallet_addEthereumChain", [
 			{
 				chainId: toHex(CHAIN_ID),
@@ -96,7 +204,7 @@ async function switchChain() {
 				blockExplorerUrls: [BLOCK_EXPLORER_URL]
 			}
 		]);
-		updateOnConnected(true);
+		updateOnConnected();
 	} catch (error) {
 		console.error(error);
 		alert("An error occurred, check the console for more details.");
@@ -105,12 +213,13 @@ async function switchChain() {
 
 async function importToken() {
 	try {
+		const provider = new BrowserProvider(window.ethereum);
 		await provider.send("wallet_watchAsset", {
 			type: "ERC20",
 			options: {
 				address: TUSD_CONTRACT_ADDRESS,
 				decimals: TUSD_DECIMALS,
-				symbol: TUSD_TICKER,
+				symbol: TUSD_TICKER
 			}
 		});
 	} catch (error) {
@@ -119,11 +228,14 @@ async function importToken() {
 	}
 }
 
-
 // Utils
 
 function toHex(value) {
 	return "0x" + value.toString(16);
+}
+
+function truncateAddress(address) {
+	return address.slice(0, 7) + "..." + address.slice(-5);
 }
 
 // UI Utils
@@ -133,9 +245,14 @@ function updateAddress(address) {
 	addressButton.querySelector("span.address").innerText =
 		truncateAddress(address);
 	connectWalletBtn.setAttribute("data-active", "false");
-	popoverAddress.querySelector("span.address").innerText =
-		truncateAddress(address);
 	siweBtn.setAttribute("data-active", "true");
+}
+
+function resetAddress() {
+	addressButton.setAttribute("data-active", "false");
+	addressButton.querySelector("span.address").innerText = "";
+	connectWalletBtn.setAttribute("data-active", "true");
+	siweBtn.setAttribute("data-active", "false");
 }
 
 function updateOnConnected() {
@@ -148,25 +265,7 @@ function updateOnDisconnected() {
 	connectedChainDiv.setAttribute("data-active", "false");
 }
 
-function truncateAddress(address) {
-	return address.slice(0, 7) + "..." + address.slice(-5);
+function setReceiveLoading(loading) {
+	siweBtn.setAttribute("data-loading", (loading).toString());
+	siweBtn.disabled = loading;
 }
-
-// Triggered on page load
-
-async function onLoad() {
-	try {
-		const network = await provider.getNetwork();
-		const isConnected = toHex(network.chainId) === toHex(CHAIN_ID);
-		if (isConnected) {
-			updateOnConnected();
-		} else {
-			updateOnDisconnected();
-		}
-	} catch (error) {
-		console.error(error);
-		alert("An error occurred, check the console for more details.");
-	}
-}
-
-onLoad();
