@@ -138,6 +138,7 @@ const claimButton = document.getElementById("claim-btn");
 const addressButton = document.getElementById("address-btn");
 const importTokenButton = document.getElementById("import-tusd-btn");
 const switchChainButton = document.getElementById("switch-chain-btn");
+const addressAvatarImg = document.getElementById("address-avatar-img");
 const connectedChainDiv = document.getElementById("connected-chain-div");
 const connectWalletButton = document.getElementById("connect-wallet-btn");
 
@@ -146,6 +147,7 @@ if (
 	!addressButton ||
 	!importTokenButton ||
 	!switchChainButton ||
+	!addressAvatarImg ||
 	!connectedChainDiv ||
 	!connectWalletButton
 ) {
@@ -241,6 +243,8 @@ function truncateAddress(address) {
 // UI Utils
 
 function updateAddress(address) {
+	addressAvatarImg.setAttribute('alt', address);
+	addressAvatarImg.setAttribute('address', address);
 	addressButton.setAttribute("data-active", "true");
 	addressButton.querySelector("span.address").innerText =
 		truncateAddress(address);
@@ -249,6 +253,8 @@ function updateAddress(address) {
 }
 
 function resetAddress() {
+	addressAvatarImg.setAttribute('alt', '');
+	addressAvatarImg.setAttribute('address', '');
 	addressButton.setAttribute("data-active", "false");
 	addressButton.querySelector("span.address").innerText = "";
 	connectWalletButton.setAttribute("data-active", "true");
