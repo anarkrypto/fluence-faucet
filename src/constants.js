@@ -1,0 +1,11 @@
+export const CHAIN_ID = 2358716091832359;
+export const CHAIN_NAME = "Fluence dar Network";
+export const NATIVE_TICKER = "FLT";
+export const RPC_URL = "https://ipc.dar.fluence.dev";
+export const BLOCK_EXPLORER_URL = "https://blockscout.dar.fluence.dev";
+export const TUSD_TICKER = "tUSD";
+export const TUSD_CONTRACT_ADDRESS = "0x266EA7F56DCaD2F5FD9B480724839542Bcc0c305";
+export const TUSD_DECIMALS = 6;
+export const SIGN_MESSAGE_STATEMENT = "Fluence Faucet - Sign with your account";
+export const HOST = window.location.host;
+export const ORIGIN = window.location.origin;
