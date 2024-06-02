@@ -16,13 +16,15 @@ export async function connectWallet() {
     }
 }
 
+/*
+ * This function is used to simulate a claim request.
+ * TODO: Implement claim service API
+ */
 export async function claim() {
     try {
         const session = await loadSession();
 
         setReceiveLoading(true);
-
-        // TODO: Implement receive backend
 
         await new Promise((resolve) => setTimeout(resolve, 1500));
     
