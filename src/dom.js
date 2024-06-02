@@ -5,8 +5,9 @@ export const addressButton = document.getElementById("address-btn");
 export const importTokenButton = document.getElementById("import-tusd-btn");
 export const addressAvatarImg = document.getElementById("address-avatar-img");
 export const connectWalletButton = document.getElementById("connect-wallet-btn");
+export const claimedSuccessDiv = document.getElementById("claimed-success");
 
-if (!claimButton || !addressButton || !importTokenButton || !addressAvatarImg || !connectWalletButton) {
+if (!claimButton || !addressButton || !importTokenButton || !addressAvatarImg || !connectWalletButton || !claimedSuccessDiv) {
     throw new Error("DOM elements not found");
 }
 

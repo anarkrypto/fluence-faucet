@@ -3,6 +3,7 @@ import { setReceiveLoading } from './ui-utils.js';
 import { loadSession } from './session-utils.js';
 import { BrowserProvider } from 'ethers';
 import { TUSD_CONTRACT_ADDRESS, TUSD_DECIMALS, TUSD_TICKER } from './constants.js';
+import { claimButton, claimedSuccessDiv } from './dom.js';
 
 export async function openWalletModal() {
     modal.open();
@@ -24,7 +25,10 @@ export async function claim() {
 
         // TODO: Implement receive backend
 
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+        await new Promise((resolve) => setTimeout(resolve, 1500));
+
+        claimedSuccessDiv.setAttribute('data-active', 'true')
+        claimButton.setAttribute('data-active', 'false');
 
         setReceiveLoading(false);
     } catch (error) {
