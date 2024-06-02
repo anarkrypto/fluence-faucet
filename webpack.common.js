@@ -5,7 +5,6 @@ const CopyPlugin = require("copy-webpack-plugin");
 const DotenvPlugin = require('dotenv-webpack');
 
 module.exports = {
-	mode: "development",
 	entry: "./src/index.js",
 	resolve: {
 		fallback: {
@@ -28,14 +27,5 @@ module.exports = {
 			patterns: [{ from: "./assets", to: "" }]
 		}),
 		new DotenvPlugin()
-	],
-	devServer: {
-		static: {
-			directory: path.join(__dirname, "dist"),
-			watch: true
-		},
-		watchFiles: ["src/**/*.html"],
-		hot: true,
-		port: 3000
-	}
+	]
 };
