@@ -43,6 +43,10 @@ export async function claim() {
 
 export async function importToken() {
     try {
+        if (!window.ethereum) {
+            alert("No Metamask or Ethereum provider found");
+            return;
+        }
         const provider = new BrowserProvider(window.ethereum);
         await provider.send("wallet_watchAsset", {
             type: "ERC20",
