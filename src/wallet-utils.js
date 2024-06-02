@@ -25,8 +25,11 @@ export async function claim() {
         // TODO: Implement receive backend
 
         await new Promise((resolve) => setTimeout(resolve, 1500));
+    
+        const day = 24 * 60 * 60 * 1000;
+        const resetAt = Date.now() + day;
 
-        setClaimedSuccess()
+        setClaimedSuccess(resetAt)
 
         setReceiveLoading(false);
     } catch (error) {

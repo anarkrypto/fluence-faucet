@@ -3,7 +3,8 @@ import {
 	addressButton,
 	connectWalletButton,
 	claimButton,
-    claimedSuccessDiv
+    claimedSuccessDiv,
+    claimCountdownSpan
 } from "./dom.js";
 
 export function truncateAddress(address) {
@@ -34,7 +35,29 @@ export function setReceiveLoading(loading) {
 	claimButton.disabled = loading;
 }
 
-export function setClaimedSuccess() {
+export function setClaimedSuccess(resetAt) {
 	claimedSuccessDiv.setAttribute("data-active", "true");
 	claimButton.setAttribute("data-active", "false");
+    startClaimCountdown(resetAt);
+}
+
+function updateClaimCountdown(remainingSeconds) {
+    const hours = Math.floor(remainingSeconds / 3600);
+    const minutes = Math.floor((remainingSeconds % 3600) / 60);
+    const seconds = remainingSeconds % 60;
+    claimCountdownSpan.innerText = `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+}
+
+function startClaimCountdown(resetAt) {
+    let remainingSeconds = Math.floor((new Date(resetAt) - new Date()) / 1000);
+    updateClaimCountdown(remainingSeconds);
+    const timer = setInterval(() => {
+        remainingSeconds -= 1;
+        if (remainingSeconds <= 0) {
+            clearInterval(timer);
+            claimCountdownSpan.innerText = "0:00:00";
+            return;
+        }
+        updateClaimCountdown(remainingSeconds);
+    }, 1000);
 }
