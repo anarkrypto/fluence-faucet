@@ -28,6 +28,7 @@ export function resetAddress() {
 	addressButton.querySelector("span.address").innerText = "";
 	connectWalletButton.setAttribute("data-active", "true");
 	claimButton.setAttribute("data-active", "false");
+	resetClaimedSuccess();
 }
 
 export function setReceiveLoading(loading) {
@@ -39,6 +40,11 @@ export function setClaimedSuccess(resetAt) {
 	claimedSuccessDiv.setAttribute("data-active", "true");
 	claimButton.setAttribute("data-active", "false");
     startClaimCountdown(resetAt);
+}
+
+export function resetClaimedSuccess() {
+	claimedSuccessDiv.setAttribute("data-active", "false");
+	claimButton.setAttribute("data-active", "false");
 }
 
 function updateClaimCountdown(remainingSeconds) {
