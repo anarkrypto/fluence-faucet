@@ -1,9 +1,8 @@
 import { modal } from './wallet-connect.js';
-import { setReceiveLoading } from './ui-utils.js';
+import { setClaimedSuccess, setReceiveLoading } from './ui-utils.js';
 import { loadSession } from './session-utils.js';
 import { BrowserProvider } from 'ethers';
 import { TUSD_CONTRACT_ADDRESS, TUSD_DECIMALS, TUSD_TICKER } from './constants.js';
-import { claimButton, claimedSuccessDiv } from './dom.js';
 
 export async function openWalletModal() {
     modal.open();
@@ -27,8 +26,7 @@ export async function claim() {
 
         await new Promise((resolve) => setTimeout(resolve, 1500));
 
-        claimedSuccessDiv.setAttribute('data-active', 'true')
-        claimButton.setAttribute('data-active', 'false');
+        setClaimedSuccess()
 
         setReceiveLoading(false);
     } catch (error) {
